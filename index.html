@@ -489,31 +489,17 @@
     });
 
     /* ── postMessage pour Odoo iframe auto-height ── */
-  function sendHeight() {
-    var experience = document.querySelector('.px-tarifs');
+function sendHeight() {
+  var section = document.querySelector('.px-tarifs');
+  if (!section) return;
 
-    var h = Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight,
-      experience ? experience.scrollHeight : 0
-    );
+  var h = section.offsetHeight;
 
-    var extra = window.innerWidth <= 768 ? 260 : 40;
-
-    window.parent.postMessage({
-      frameId: 'px-frame-tarifs',
-      iframeHeight: h + extra
-    }, '*');
-  }
-
-  window.addEventListener('load', function() {
-    sendHeight();
-    setTimeout(sendHeight, 300);
-    setTimeout(sendHeight, 800);
-    setTimeout(sendHeight, 1500);
-  });
-
-  window.addEventListener('resize', sendHeight);
+  window.parent.postMessage({
+    frameId: 'px-frame-tarifs',
+    iframeHeight: h + 20
+  }, '*');
+}
   </script>
 </body>
 </html>
