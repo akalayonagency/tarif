@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarifs Réparation - PhoneXpress</title>
+
+  <style>
+    :root {
+      --px-blue: #0b8fd8;
+      --px-blue-light: #38c7ff;
+      --px-blue-dark: #033f68;
+      --px-night: #06111c;
+      --px-white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      background: transparent;
+      color: var(--px-white);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .px-tarifs {
+      width: min(1200px, 100%);
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    /* ── HEADER ── */
+    .px-tarifs-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .px-tarifs-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(6,17,28,0.52);
+      border: 1px solid rgba(56,199,255,0.45);
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--px-blue-light);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .px-tarifs-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--px-blue-light);
+      box-shadow: 0 0 6px var(--px-blue-light);
+      animation: pxDotPulse 2s infinite;
+    }
+
+    @keyframes pxDotPulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.25; }
+    }
+
+    .px-tarifs-title {
+      font-size: clamp(26px, 3vw, 42px);
+      font-weight: 900;
+      text-transform: uppercase;
+      margin: 0 0 12px;
+      line-height: 1.05;
+      color: var(--px-white);
+      text-shadow:
+        0 0 18px rgba(56,199,255,0.4),
+        0 0 50px rgba(11,143,216,0.2);
+    }
+
+    .px-tarifs-title span {
+      color: var(--px-blue-light);
+    }
+
+    .px-tarifs-subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      margin: 0;
+      font-weight: 400;
+    }
+
+    /* ── GRILLE ── */
+    .px-tarifs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .px-tarifs-grid-bottom {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    /* ── CARD ── */
+    .px-tarifs-card {
+      position: relative;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(56,199,255,0.18);
+      border-radius: 18px;
+      padding: 24px 20px;
+      overflow: hidden;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .px-tarifs-card:hover {
+      border-color: rgba(56,199,255,0.5);
+      transform: translateY(-3px);
+    }
+
+    .px-tarifs-card canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .px-tarifs-card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── DEVICE HEADER ── */
+    .px-device-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(56,199,255,0.15);
+    }
+
+    .px-device-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .px-device-name {
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--px-white);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    }
+
+    /* ── LIGNES TARIF ── */
+    .px-tarif-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .px-tarif-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .px-tarif-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 400;
+    }
+
+    .px-tarif-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--px-blue-light);
+      white-space: nowrap;
+    }
+
+    .px-tarif-price.free {
+      color: #4ade80;
+    }
+
+    /* ── BADGES ── */
+    .px-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.03em;
+    }
+
+    .px-badge-garantie {
+      background: rgba(56,199,255,0.1);
+      border: 1px solid rgba(56,199,255,0.3);
+      color: var(--px-blue-light);
+    }
+
+    .px-badge-gratuit {
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.3);
+      color: #4ade80;
+    }
+
+    /* ── NOTE BAS ── */
+    .px-tarifs-note {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(56,199,255,0.18);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-top: 16px;
+    }
+
+    .px-tarifs-note-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .px-tarifs-note-text {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .px-tarifs { padding: 40px 16px; }
+      .px-tarifs-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .px-tarifs { padding: 32px 12px; }
+      .px-tarifs-title { font-size: 24px; }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="px-tarifs">
+
+    <div class="px-tarifs-header">
+      <div class="px-tarifs-pill">
+        <div class="px-tarifs-pill-dot"></div>
+        Nos tarifs
+      </div>
+      <h2 class="px-tarifs-title">Réparations <span>Phone Xpress</span></h2>
+      <p class="px-tarifs-subtitle">Diagnostic offert — Réparation garantie — Sans rendez-vous</p>
+    </div>
+
+    <div class="px-tarifs-grid">
+
+      <!-- iPhone -->
+      <div class="px-tarifs-card">
+        <canvas></canvas>
+        <div class="px-tarifs-card-content">
+          <div class="px-device-header">
+            <span class="px-device-icon">🍎</span>
+            <span class="px-device-name">iPhone</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Écran <span class="px-badge px-badge-garantie">Garanti</span></span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Batterie</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Vitre arrière</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Connecteur de charge</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Diagnostic <span class="px-badge px-badge-gratuit">Offert</span></span>
+            <span class="px-tarif-price free">Gratuit</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Samsung -->
+      <div class="px-tarifs-card">
+        <canvas></canvas>
+        <div class="px-tarifs-card-content">
+          <div class="px-device-header">
+            <span class="px-device-icon">📱</span>
+            <span class="px-device-name">Samsung</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Écran <span class="px-badge px-badge-garantie">Garanti</span></span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Batterie</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Vitre arrière</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Connecteur de charge</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Diagnostic <span class="px-badge px-badge-gratuit">Offert</span></span>
+            <span class="px-tarif-price free">Gratuit</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tablettes & autres -->
+      <div class="px-tarifs-card">
+        <canvas></canvas>
+        <div class="px-tarifs-card-content">
+          <div class="px-device-header">
+            <span class="px-device-icon">📟</span>
+            <span class="px-device-name">Tablettes &amp; produits connectés</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Écran tablette <span class="px-badge px-badge-garantie">Garanti</span></span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Montre connectée</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Écouteurs / AirPods</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Diagnostic <span class="px-badge px-badge-gratuit">Offert</span></span>
+            <span class="px-tarif-price free">Gratuit</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Autres marques -->
+      <div class="px-tarifs-card">
+        <canvas></canvas>
+        <div class="px-tarifs-card-content">
+          <div class="px-device-header">
+            <span class="px-device-icon">🔧</span>
+            <span class="px-device-name">Autres marques</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Xiaomi / Oppo / OnePlus</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Huawei / Honor</span>
+            <span class="px-tarif-price">à partir de X€</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Toute autre marque</span>
+            <span class="px-tarif-price">Devis gratuit</span>
+          </div>
+          <div class="px-tarif-row">
+            <span class="px-tarif-label">Diagnostic <span class="px-badge px-badge-gratuit">Offert</span></span>
+            <span class="px-tarif-price free">Gratuit</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Note de bas -->
+    <div class="px-tarifs-note">
+      <span class="px-tarifs-note-icon">🛡️</span>
+      <p class="px-tarifs-note-text">Toutes les réparations sont effectuées par Thomas, votre technicien, sans intermédiaire. Chaque intervention est couverte par une garantie. Les prix indiqués sont des tarifs de départ — un devis précis vous est remis gratuitement après diagnostic.</p>
+    </div>
+
+  </section>
+
+  <script>
+    const cards = document.querySelectorAll('.px-tarifs-card');
+
+    cards.forEach(function(card) {
+      var canvas = card.querySelector('canvas');
+      var ctx = canvas.getContext('2d');
+      var w = 0, h = 0, particles = [];
+
+      function rand(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      function init() {
+        var rect = card.getBoundingClientRect();
+        w = canvas.width = rect.width * window.devicePixelRatio;
+        h = canvas.height = rect.height * window.devicePixelRatio;
+        ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+        w = rect.width;
+        h = rect.height;
+
+        particles = [];
+        var count = Math.max(8, Math.floor((w * h) / 2800));
+
+        for (var i = 0; i < count; i++) {
+          particles.push({
+            x: rand(0, w),
+            y: rand(0, h),
+            r: rand(0.6, 2.2),
+            sx: (Math.random() - 0.5) * 0.45,
+            sy: (Math.random() - 0.5) * 0.45,
+            a: rand(0.2, 0.75),
+            blue: Math.random() > 0.45,
+            rot: rand(0, Math.PI * 2),
+            rotSpeed: (Math.random() - 0.5) * 0.03,
+            type: Math.random() > 0.6 ? 'shard' : 'circle'
+          });
+        }
+      }
+
+      function drawParticle(p) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = p.a;
+
+        var color = p.blue
+          ? 'rgba(56,199,255,' + p.a + ')'
+          : 'rgba(255,255,255,' + (p.a * 0.4) + ')';
+
+        ctx.fillStyle = color;
+        ctx.shadowColor = p.blue ? 'rgba(56,199,255,0.8)' : 'transparent';
+        ctx.shadowBlur = p.blue ? 6 : 0;
+
+        if (p.type === 'shard') {
+          ctx.beginPath();
+          ctx.moveTo(-p.r, -p.r * 0.4);
+          ctx.lineTo(p.r * 1.5, -p.r * 0.2);
+          ctx.lineTo(p.r * 0.5, p.r);
+          ctx.lineTo(-p.r * 0.7, p.r * 0.5);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+
+        particles.forEach(function(p) {
+          p.x += p.sx;
+          p.y += p.sy;
+          p.rot += p.rotSpeed;
+
+          if (p.x < -10) p.x = w + 10;
+          if (p.x > w + 10) p.x = -10;
+          if (p.y < -10) p.y = h + 10;
+          if (p.y > h + 10) p.y = -10;
+
+          drawParticle(p);
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      init();
+      animate();
+
+      window.addEventListener('resize', init);
+    });
+
+    /* ── postMessage pour Odoo iframe auto-height ── */
+    function sendHeight() {
+      var h = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight
+      );
+
+      window.parent.postMessage({
+        frameId: 'px-frame-tarifs',
+        iframeHeight: h
+      }, '*');
+    }
+
+    sendHeight();
+    window.addEventListener('resize', sendHeight);
+  </script>
+</body>
+</html>
