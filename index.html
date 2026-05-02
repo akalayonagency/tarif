@@ -489,23 +489,31 @@
     });
 
     /* ── postMessage pour Odoo iframe auto-height ── */
-   function sendHeight() {
-  var h = Math.max(
-    document.body.scrollHeight,
-    document.documentElement.scrollHeight,
-    document.body.offsetHeight,
-    document.documentElement.offsetHeight
-  );
+  function sendHeight() {
+    var experience = document.querySelector('.px-experience');
 
-  window.parent.postMessage({
-    frameId: 'px-frame-tarifs',
-    iframeHeight: h
-  }, '*');
-}
+    var h = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+      experience ? experience.scrollHeight : 0
+    );
 
-// Appel continu au lieu d'une seule fois
-setInterval(sendHeight, 500);
-window.addEventListener('resize', sendHeight);
+    var extra = window.innerWidth <= 768 ? 260 : 40;
+
+    window.parent.postMessage({
+      frameId: 'px-frame-1',
+      iframeHeight: h + extra
+    }, '*');
+  }
+
+  window.addEventListener('load', function() {
+    sendHeight();
+    setTimeout(sendHeight, 300);
+    setTimeout(sendHeight, 800);
+    setTimeout(sendHeight, 1500);
+  });
+
+  window.addEventListener('resize', sendHeight);
   </script>
 </body>
 </html>
